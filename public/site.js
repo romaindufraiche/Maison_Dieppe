@@ -106,7 +106,7 @@
     if (vitrine.length) {
       const grid = $('#vitrine');
       grid.innerHTML = '';
-      vitrine.forEach((d) => {
+      const makeCard = (d) => {
         const card = el('article', 'v-card');
         const media = el('div', 'v-media');
         if (d.photo) {
@@ -127,9 +127,13 @@
         if (canOrder) foot.appendChild(reserveBtn(d));
         body.appendChild(foot);
         card.appendChild(body);
-        grid.appendChild(card);
-      });
+        return card;
+      };
+      const track = el('div', 'v-track');
+      vitrine.forEach((d) => track.appendChild(makeCard(d)));
+      grid.appendChild(track);
       $('#vitrine-block').hidden = false;
+      startMarquee(grid, track, () => vitrine.map(makeCard));
     }
 
     $('#menu-empty').hidden = menu.length > 0;
@@ -137,6 +141,68 @@
       const lead = $('.order .lead');
       lead.textContent = 'Les réservations en ligne sont en pause : appelez-nous au ' + settings.phone + ', on s’occupe de tout.';
     }
+  }
+
+  // Défilement automatique de droite à gauche, en boucle.
+  // Le client peut aussi faire glisser la ligne au doigt : le défilement se met
+  // en pause pendant qu'il touche ou survole la vitrine, puis reprend.
+  function startMarquee(viewport, track, makeCopies) {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    requestAnimationFrame(() => {
+      const loopWidth = track.scrollWidth;
+      if (loopWidth <= viewport.clientWidth) return; // tout tient à l'écran : rien à faire défiler
+      // Copie des cartes pour une boucle sans « saut »
+      const copies = makeCopies();
+      copies.forEach((c) => {
+        c.setAttribute('aria-hidden', 'true');
+        c.querySelectorAll('button, a').forEach((b) => (b.tabIndex = -1));
+        track.appendChild(c);
+      });
+      const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
+      const period = loopWidth + gap;
+      const speed = 35; // pixels par seconde
+      let pos = viewport.scrollLeft;
+      let paused = false;
+      let resumeTimer = null;
+      let last = performance.now();
+
+      const pause = () => {
+        paused = true;
+        clearTimeout(resumeTimer);
+      };
+      const resumeSoon = () => {
+        clearTimeout(resumeTimer);
+        resumeTimer = setTimeout(() => {
+          pos = viewport.scrollLeft;
+          paused = false;
+        }, 2500);
+      };
+      viewport.addEventListener('pointerenter', pause);
+      viewport.addEventListener('pointerleave', resumeSoon);
+      viewport.addEventListener('touchstart', pause, { passive: true });
+      viewport.addEventListener('touchend', resumeSoon, { passive: true });
+      viewport.addEventListener('focusin', pause);
+      viewport.addEventListener('focusout', resumeSoon);
+      viewport.addEventListener('scroll', () => {
+        if (!paused) return;
+        // Glissé à la main : on garde la boucle infinie dans les deux sens
+        if (viewport.scrollLeft >= period) viewport.scrollLeft -= period;
+        else if (viewport.scrollLeft <= 0) viewport.scrollLeft += period;
+      });
+
+      function step(now) {
+        const dt = Math.min(64, now - last);
+        last = now;
+        const dialogOpen = document.querySelector('dialog[open]');
+        if (!paused && !dialogOpen && !document.hidden) {
+          pos += (speed * dt) / 1000;
+          if (pos >= period) pos -= period;
+          viewport.scrollLeft = pos;
+        }
+        requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    });
   }
 
   function renderSettings(s) {

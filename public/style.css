@@ -125,7 +125,15 @@ h1, h2, h3 { line-height: 1.15; margin: 0; }
 .week-row .btn { padding: 9px 18px; font-size: .9rem; }
 
 /* vitrine */
-.vitrine { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 16px; }
+.vitrine {
+  overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none;
+  margin: 0 -20px; padding: 4px 20px 12px;
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 20px, #000 calc(100% - 20px), transparent 100%);
+          mask-image: linear-gradient(to right, transparent 0, #000 20px, #000 calc(100% - 20px), transparent 100%);
+}
+.vitrine::-webkit-scrollbar { display: none; }
+.v-track { display: flex; gap: 16px; width: max-content; }
+.v-track .v-card { width: 250px; flex: none; }
 .v-card { background: #fff; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); display: flex; flex-direction: column; }
 .v-media { position: relative; aspect-ratio: 4 / 3; background: var(--navy); display: grid; place-items: center; }
 .v-media img { width: 100%; height: 100%; object-fit: cover; }
@@ -361,3 +369,4 @@ strong.dish-title { display: flex; }
 }
 .week-dish .dish-title span { font-size: 1rem; color: var(--navy-deep); }
 .week-dish .dish-title .price-tag { color: var(--red); font-size: .9rem; }
+@media (max-width: 560px) { .v-track .v-card { width: 215px; } .v-track { gap: 12px; } }
