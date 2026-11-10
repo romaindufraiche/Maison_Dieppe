@@ -5,9 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Admin — Maison Dieppe</title>
   <meta name="robots" content="noindex">
-  <meta name="theme-color" content="#1f2a2e">
+  <meta name="theme-color" content="#1b2140">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍽️</text></svg>">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Allura&family=Cormorant+Garamond:wght@600&family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/style.css">
   <link rel="stylesheet" href="/admin.css">
 </head>
@@ -15,10 +18,12 @@
   <!-- Connexion -->
   <section id="login-view" class="login" hidden>
     <form id="login-form" class="card">
-      <h1>Maison Dieppe</h1>
-      <p class="muted">Espace administrateur</p>
+      <div class="wordmark dark">
+        <span class="wm-name">Maison Dieppe</span>
+        <span class="wm-script">espace équipe</span>
+      </div>
       <label>Mot de passe<input type="password" name="password" autocomplete="current-password" required autofocus></label>
-      <button class="btn btn-primary" type="submit">Se connecter</button>
+      <button class="btn btn-red" type="submit">Se connecter</button>
       <p class="form-msg error" id="login-msg"></p>
     </form>
   </section>
@@ -26,91 +31,97 @@
   <!-- Application -->
   <div id="app-view" hidden>
     <header class="admin-bar">
-      <strong>Admin</strong>
+      <span class="wm-name">Maison Dieppe</span>
       <div>
         <a href="/" target="_blank" class="link">Voir le site</a>
-        <button class="link" id="logout">Déconnexion</button>
+        <button class="link" id="logout">Quitter</button>
       </div>
     </header>
 
     <nav class="tabs" role="tablist">
-      <button class="tab active" data-tab="ardoise">Ardoise</button>
-      <button class="tab" data-tab="resas">Réservations <span class="badge" id="resa-badge" hidden></span></button>
+      <button class="tab active" data-tab="plats">Plats</button>
+      <button class="tab" data-tab="commandes">Commandes <span class="badge" id="order-badge" hidden></span></button>
       <button class="tab" data-tab="infos">Infos</button>
     </nav>
 
     <main class="admin-main">
-      <!-- ARDOISE -->
-      <section data-panel="ardoise">
+      <!-- PLATS -->
+      <section data-panel="plats">
         <form id="dish-form" class="card">
           <h2>Publier un plat</h2>
+
+          <div>
+            <span class="label">Pour quel jour&nbsp;?</span>
+            <div class="chips wrap-chips" id="day-chips"></div>
+          </div>
 
           <label class="photo-picker" id="photo-picker">
             <input type="file" name="photo" accept="image/*" id="photo-input">
             <img id="photo-preview" alt="" hidden>
             <span id="photo-placeholder">📷 Ajouter une photo<small>(facultatif)</small></span>
           </label>
+          <button type="button" class="link small-link" id="photo-remove" hidden>Retirer la photo</button>
 
           <div class="segmented" id="category">
-            <button type="button" data-cat="Entrée">Entrée</button>
             <button type="button" data-cat="Plat" class="on">Plat</button>
+            <button type="button" data-cat="Entrée">Entrée</button>
             <button type="button" data-cat="Dessert">Dessert</button>
+            <button type="button" data-cat="Spécialité">Spécialité</button>
           </div>
 
           <div class="row">
-            <label class="grow">Nom du plat<input name="title" required maxlength="120" placeholder="Ex : Filet de bar, beurre blanc"></label>
-            <label class="price-field">Prix<input name="price" inputmode="decimal" maxlength="20" placeholder="16"></label>
+            <label class="grow">Nom du plat<input name="title" required maxlength="120" placeholder="Ex : Joue de porc au cidre"></label>
+            <label class="price-field">Prix<input name="price" inputmode="decimal" maxlength="20" placeholder="12,50"></label>
           </div>
-          <label>Description <span class="muted">(facultatif)</span><textarea name="description" rows="2" maxlength="600" placeholder="Accompagnement, provenance…"></textarea></label>
+          <label>Accompagnement / description <span class="muted">(facultatif)</span><textarea name="description" rows="2" maxlength="600" placeholder="Ex : boulgour pilaf"></textarea></label>
 
-          <label class="check"><input type="checkbox" name="replace" id="replace"> Nouvelle journée : retirer les plats actuels de l'ardoise</label>
-
-          <button class="btn btn-primary big" type="submit" id="publish-btn">Publier sur le site</button>
+          <button class="btn btn-red btn-block" type="submit" id="publish-btn">Publier sur le site</button>
           <p class="form-msg" id="dish-msg" role="status"></p>
         </form>
 
         <div class="card">
           <div class="card-head">
-            <h2>Sur l'ardoise maintenant</h2>
+            <h2>En ligne maintenant</h2>
             <button class="link danger" id="clear-menu">Tout retirer</button>
           </div>
-          <div id="on-menu" class="list"></div>
+          <p class="muted small">Les plats du jour disparaissent tout seuls le lendemain.</p>
+          <div id="live" class="list"></div>
         </div>
 
         <div class="card">
-          <h2>Plats déjà publiés</h2>
-          <p class="muted small">Un plat revient ? Remettez-le en un clic.</p>
+          <h2>Déjà publiés</h2>
+          <p class="muted small">Un plat revient ? « Republier » remplit le formulaire, il ne reste qu'à choisir le jour.</p>
           <input type="search" id="history-search" placeholder="Rechercher un plat…">
           <div id="history" class="list"></div>
         </div>
       </section>
 
-      <!-- RÉSERVATIONS -->
-      <section data-panel="resas" hidden>
-        <div class="card">
-          <h2>Réservations à venir</h2>
-          <div id="resa-list" class="list"></div>
-        </div>
+      <!-- COMMANDES -->
+      <section data-panel="commandes" hidden>
+        <div id="orders-upcoming"></div>
         <details class="card">
-          <summary>Réservations passées</summary>
-          <div id="resa-past" class="list"></div>
+          <summary>Commandes passées</summary>
+          <div id="orders-past" class="list"></div>
         </details>
       </section>
 
       <!-- INFOS -->
       <section data-panel="infos" hidden>
         <form id="settings-form" class="card">
-          <h2>Informations du restaurant</h2>
+          <h2>Informations de la boutique</h2>
+          <label class="check"><input type="checkbox" name="ordersOpen"> Réservation de plats en ligne activée</label>
           <label>Nom<input name="name" maxlength="120"></label>
           <label>Slogan<input name="tagline" maxlength="200"></label>
           <label>Téléphone<input name="phone" type="tel" maxlength="30"></label>
           <label>Adresse<textarea name="address" rows="2" maxlength="300"></textarea></label>
-          <label>Horaires<textarea name="hours" rows="3" maxlength="300"></textarea></label>
-          <label>Page Facebook<input name="facebook" type="url" maxlength="300"></label>
+          <label>Horaires (texte affiché)<textarea name="hours" rows="2" maxlength="300"></textarea></label>
+          <div class="row">
+            <label class="grow">Retraits à partir de<input name="openTime" type="time" step="900"></label>
+            <label class="grow">jusqu'à<input name="closeTime" type="time" step="900"></label>
+          </div>
           <label>Instagram<input name="instagram" type="url" maxlength="300"></label>
-          <label class="check"><input type="checkbox" name="reservationsOpen"> Réservation en ligne activée</label>
-          <button class="btn btn-primary" type="submit">Enregistrer</button>
-          <p class="form-msg" id="settings-msg" role="status"></p>
+          <label>Facebook<input name="facebook" type="url" maxlength="300"></label>
+          <button class="btn btn-red" type="submit">Enregistrer</button>
         </form>
       </section>
     </main>
