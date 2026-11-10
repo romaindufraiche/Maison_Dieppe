@@ -2,13 +2,13 @@
 
 Site très simple pour un restaurant dont la carte change tous les jours :
 
-- **Page publique** (`/`) : l'ardoise du jour (plats avec photo et prix), un bouton **Réserver**, un bouton **Appeler**, les horaires, l'adresse et le lien Facebook.
+- **Page publique** (`/`) : l'ardoise du jour (plats avec photo et prix), un bouton **Réserver**, un bouton **Appeler**, les horaires, l'adresse et les liens Facebook et Instagram.
 - **Espace administrateur** (`/admin`), pensé pour le téléphone :
   - **Publier un plat en 10 secondes** : photo (prise avec le téléphone, redimensionnée automatiquement), Entrée / Plat / Dessert, nom, prix → « Publier sur le site ».
   - Case « Nouvelle journée » : retire les plats de la veille en publiant le premier plat du jour.
   - **Historique** : un plat qui revient se remet sur l'ardoise en un clic.
   - **Réservations** : liste des demandes avec le téléphone cliquable, boutons Confirmer / Annuler.
-  - **Infos** : nom, slogan, téléphone, adresse, horaires, Facebook, activer ou non la réservation en ligne.
+  - **Infos** : nom, slogan, téléphone, adresse, horaires, Facebook, Instagram, activer ou non la réservation en ligne.
 
 Aucune base de données : tout est stocké dans `data/db.json` et les photos dans `data/uploads/`.
 

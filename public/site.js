@@ -77,6 +77,10 @@
       $('#fb-link').href = s.facebook;
       $('#fb-link').hidden = false;
     }
+    if (s.instagram) {
+      $('#ig-link').href = s.instagram;
+      $('#ig-link').hidden = false;
+    }
     if (!s.reservationsOpen) {
       $('#reserve-form').hidden = true;
       $('#reserve-lead').textContent = s.phone

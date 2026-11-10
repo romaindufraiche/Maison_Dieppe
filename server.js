@@ -31,6 +31,7 @@ const DEFAULT_DB = {
     address: '',
     hours: 'Du mardi au samedi, midi et soir',
     facebook: 'https://www.facebook.com/p/Maison-Dieppe-100071220223822/',
+    instagram: 'https://www.instagram.com/maisondieppe_traiteur/',
     reservationsOpen: true,
   },
   dishes: [],
@@ -266,7 +267,7 @@ app.delete('/api/reservations/:id', requireAdmin, (req, res) => {
 // ---- Admin : informations du restaurant -------------------------------------
 app.put('/api/settings', requireAdmin, (req, res) => {
   const b = req.body || {};
-  for (const k of ['name', 'tagline', 'phone', 'address', 'hours', 'facebook']) {
+  for (const k of ['name', 'tagline', 'phone', 'address', 'hours', 'facebook', 'instagram']) {
     if (typeof b[k] === 'string') db.settings[k] = str(b[k], 300);
   }
   if (typeof b.reservationsOpen === 'boolean') db.settings.reservationsOpen = b.reservationsOpen;

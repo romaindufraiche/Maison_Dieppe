@@ -334,7 +334,7 @@
   // ---------- infos ----------
   function fillSettings() {
     const f = $('#settings-form');
-    ['name', 'tagline', 'phone', 'address', 'hours', 'facebook'].forEach((k) => (f[k].value = state.settings[k] || ''));
+    ['name', 'tagline', 'phone', 'address', 'hours', 'facebook', 'instagram'].forEach((k) => (f[k].value = state.settings[k] || ''));
     f.reservationsOpen.checked = !!state.settings.reservationsOpen;
   }
 
@@ -342,7 +342,7 @@
     e.preventDefault();
     const f = e.target;
     const body = { reservationsOpen: f.reservationsOpen.checked };
-    ['name', 'tagline', 'phone', 'address', 'hours', 'facebook'].forEach((k) => (body[k] = f[k].value));
+    ['name', 'tagline', 'phone', 'address', 'hours', 'facebook', 'instagram'].forEach((k) => (body[k] = f[k].value));
     try {
       state.settings = await api('/api/settings', { method: 'PUT', body });
       toast('✅ Informations enregistrées');
