@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Maison Dieppe — Le plat du jour</title>
+  <meta name="description" content="Maison Dieppe : cuisine maison, la carte change tous les jours. Découvrez le plat du jour et réservez votre table.">
+  <meta name="theme-color" content="#1f2a2e">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍽️</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="hero">
+    <nav class="topbar">
+      <span class="brand" data-name>Maison Dieppe</span>
+      <a class="btn btn-small" href="#reserver">Réserver</a>
+    </nav>
+    <div class="hero-content">
+      <p class="eyebrow">Restaurant</p>
+      <h1 data-name>Maison Dieppe</h1>
+      <p class="tagline" id="tagline">Cuisine maison, produits frais — la carte change tous les jours</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#reserver">Réserver une table</a>
+        <a class="btn btn-ghost" id="call-btn" href="#" hidden>Appeler</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="board-section" id="ardoise">
+      <div class="board">
+        <h2 class="board-title">L'ardoise du jour</h2>
+        <p class="board-date" id="today"></p>
+        <div id="menu" class="menu" aria-live="polite">
+          <p class="empty">Chargement…</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="reserve-section" id="reserver">
+      <div class="container">
+        <h2>Réserver une table</h2>
+        <p class="lead" id="reserve-lead">Remplissez le formulaire, nous vous rappelons pour confirmer.</p>
+        <form id="reserve-form" class="reserve-form" novalidate>
+          <div class="grid">
+            <label>Nom<input name="name" autocomplete="name" required maxlength="80"></label>
+            <label>Téléphone<input name="phone" type="tel" autocomplete="tel" required maxlength="30"></label>
+            <label>Date<input name="date" type="date" required></label>
+            <label>Heure<input name="time" type="time" required step="900" value="12:30"></label>
+            <label>Personnes<input name="people" type="number" min="1" max="30" value="2" required></label>
+          </div>
+          <label>Message (facultatif)<textarea name="message" rows="2" maxlength="500" placeholder="Allergies, chaise bébé…"></textarea></label>
+          <label class="hp" aria-hidden="true">Site web<input name="website" tabindex="-1" autocomplete="off"></label>
+          <button class="btn btn-primary" type="submit">Envoyer la demande</button>
+          <p class="form-msg" id="reserve-msg" role="status"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div>
+        <h3 data-name>Maison Dieppe</h3>
+        <p id="address"></p>
+      </div>
+      <div>
+        <h3>Horaires</h3>
+        <p id="hours"></p>
+      </div>
+      <div>
+        <h3>Contact</h3>
+        <p><a id="phone-link" href="#" hidden></a></p>
+        <p><a id="fb-link" href="#" target="_blank" rel="noopener" hidden>Suivez-nous sur Facebook</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/site.js"></script>
+</body>
+</html>
