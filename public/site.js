@@ -21,6 +21,20 @@
 
   let data = null;
 
+  // Prix numérique (« 12,50 » → 12.5) et affichage en euros
+  const priceNum = (p) => {
+    const m = String(p || '').replace(/\s/g, '').replace(',', '.').match(/\d+(\.\d{1,2})?/);
+    return m ? parseFloat(m[0]) : null;
+  };
+  const euros = (n) => n.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' });
+
+  function titleWithPrice(tag, d) {
+    const t = el(tag, 'dish-title');
+    t.appendChild(el('span', null, d.title));
+    if (d.price) t.appendChild(el('span', 'price-tag', priceLabel(d.price)));
+    return t;
+  }
+
   // ------------------------------------------------------------------ menu
   function reserveBtn(dish, label) {
     const b = el('button', 'btn btn-red', label || 'Réserver');
@@ -57,10 +71,9 @@
           card.appendChild(img);
         }
         const body = el('div', 'today-body');
-        body.appendChild(el('h3', null, d.title));
+        body.appendChild(titleWithPrice('h3', d));
         if (d.description) body.appendChild(el('p', null, d.description));
         const foot = el('div', 'today-foot');
-        if (d.price) foot.appendChild(el('span', 'price', priceLabel(d.price)));
         if (canOrder) foot.appendChild(reserveBtn(d, 'Réserver ce plat'));
         body.appendChild(foot);
         card.appendChild(body);
@@ -80,10 +93,9 @@
         day.appendChild(el('span', null, fmt(d.date, { day: 'numeric', month: 'short' })));
         li.appendChild(day);
         const txt = el('div', 'week-dish');
-        txt.appendChild(el('strong', null, d.title));
+        txt.appendChild(titleWithPrice('strong', d));
         if (d.description) txt.appendChild(el('span', null, d.description));
         li.appendChild(txt);
-        if (d.price) li.appendChild(el('span', 'price small', priceLabel(d.price)));
         if (canOrder) li.appendChild(reserveBtn(d));
         list.appendChild(li);
       });
@@ -109,10 +121,9 @@
         if (d.category) media.appendChild(el('span', 'tag', d.category));
         card.appendChild(media);
         const body = el('div', 'v-body');
-        body.appendChild(el('h3', null, d.title));
+        body.appendChild(titleWithPrice('h3', d));
         if (d.description) body.appendChild(el('p', null, d.description));
         const foot = el('div', 'v-foot');
-        foot.appendChild(el('span', 'price small', priceLabel(d.price)));
         if (canOrder) foot.appendChild(reserveBtn(d));
         body.appendChild(foot);
         card.appendChild(body);
@@ -141,6 +152,27 @@
     if (s.hours) $('[data-hours]').textContent = s.hours;
     $$('[data-instagram]').forEach((a) => (s.instagram ? (a.href = s.instagram) : a.remove()));
     $$('[data-facebook]').forEach((a) => (s.facebook ? (a.href = s.facebook) : a.remove()));
+  }
+
+  function renderClosure(closures) {
+    const note = $('#closure-note');
+    const today = data.today;
+    const soon = new Date(dateObj(today).getTime() + 30 * 864e5).toISOString().slice(0, 10);
+    const c = closures.find((x) => x.from <= soon);
+    if (!c) return;
+    const d = (iso) => fmt(iso, { weekday: 'long', day: 'numeric', month: 'long' });
+    const reason = c.reason ? ' (' + c.reason + ')' : '';
+    let text;
+    if (c.from <= today) {
+      text = 'La boutique est fermée' + reason + (c.to === today ? ' aujourd’hui.' : ' jusqu’au ' + d(c.to) + ' inclus.');
+      if (data.pickupDays.length) text += ' Réservations possibles dès le ' + d(data.pickupDays[0]) + '.';
+    } else if (c.from === c.to) {
+      text = 'Fermeture exceptionnelle le ' + d(c.from) + reason + '.';
+    } else {
+      text = 'Fermeture exceptionnelle du ' + d(c.from) + ' au ' + d(c.to) + ' inclus' + reason + '.';
+    }
+    note.textContent = text;
+    note.hidden = false;
   }
 
   // ------------------------------------------------------------ commande
@@ -199,11 +231,18 @@
     fillTimes();
   }
 
+  function updateTotal() {
+    const unit = current && priceNum(current.price);
+    $('#od-submit').textContent = unit == null ? 'Réserver' : 'Réserver · ' + euros(unit * qty);
+  }
+
   function openOrder(dish) {
     current = dish;
     qty = 1;
     $('#od-qty').textContent = qty;
     $('#od-title').textContent = dish.title;
+    $('#od-price').textContent = dish.price ? priceLabel(dish.price) + ' la part' : '';
+    updateTotal();
     const photo = $('#od-photo');
     photo.hidden = !dish.photo;
     if (dish.photo) photo.src = dish.photo;
@@ -243,6 +282,7 @@
     b.addEventListener('click', () => {
       qty = Math.max(1, Math.min(50, qty + Number(b.dataset.qty)));
       $('#od-qty').textContent = qty;
+      updateTotal();
     })
   );
 
@@ -293,7 +333,7 @@
       localStorage.setItem('md_time', time);
       const done = $('#done-text');
       done.innerHTML = '';
-      done.appendChild(el('strong', null, qty + ' × ' + current.title));
+      done.appendChild(el('strong', null, qty + ' × ' + current.title + (out.order.total != null ? ' · ' + euros(out.order.total) : '')));
       done.appendChild(document.createElement('br'));
       done.appendChild(document.createTextNode('À retirer ' + longDate(chosenDate) + ', à partir de ' + time.replace(':', 'h') + '.'));
       const map = $('#order-done iframe');
@@ -305,7 +345,7 @@
       msg.classList.add('error');
     } finally {
       btn.disabled = false;
-      btn.textContent = 'Réserver';
+      updateTotal();
     }
   });
 
@@ -387,6 +427,7 @@
     .then((d) => {
       data = d;
       renderSettings(d.settings);
+      renderClosure(d.closures || []);
       renderMenu();
     })
     .catch(() => {

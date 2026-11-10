@@ -51,16 +51,27 @@ const DEFAULT_SETTINGS = {
   facebook: 'https://www.facebook.com/p/Maison-Dieppe-100071220223822/',
   instagram: 'https://www.instagram.com/maisondieppe_traiteur/',
   ordersOpen: true,
+  closures: [], // fermetures exceptionnelles : { id, from, to, reason }
 };
 
-function nextOpenDays(count, openDays = DEFAULT_SETTINGS.openDays) {
+// La boutique est-elle fermée ce jour-là (période de fermeture déclarée) ?
+const closureOn = (iso, closures = []) => closures.find((c) => c.from <= iso && iso <= c.to);
+
+function nextOpenDays(count, openDays = DEFAULT_SETTINGS.openDays, closures = []) {
   const days = [];
   let d = todayIso();
-  while (days.length < count) {
-    if (openDays.includes(weekday(d))) days.push(d);
+  for (let guard = 0; days.length < count && guard < 400; guard++) {
+    if (openDays.includes(weekday(d)) && !closureOn(d, closures)) days.push(d);
     d = addDays(d, 1);
   }
   return days;
+}
+const pickupDays = () => nextOpenDays(7, db.settings.openDays, db.settings.closures);
+
+// « 12,50 », « 12.5 € » → 12.5 ; vide ou illisible → null
+function parsePrice(p) {
+  const m = String(p || '').replace(/\s/g, '').replace(',', '.').match(/\d+(\.\d{1,2})?/);
+  return m ? Math.round(parseFloat(m[0]) * 100) / 100 : null;
 }
 
 // Contenu de démonstration au premier lancement (repris de leur Instagram)
@@ -118,7 +129,7 @@ function newId() {
 const str = (v, max = 500) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
 
 // Un plat est visible s'il est publié et que sa date (s'il en a une) n'est pas passée
-const isLive = (d) => d.onMenu && (!d.date || d.date >= todayIso());
+const isLive = (d) => d.onMenu && (!d.date || (d.date >= todayIso() && !closureOn(d.date, db.settings.closures)));
 
 // ---------------------------------------------------------------------------
 // Authentification administrateur (cookie signé, sans dépendance)
@@ -209,8 +220,9 @@ app.get('/api/public', (_req, res) => {
   res.json({
     today: todayIso(),
     now: nowHHMM(),
-    pickupDays: nextOpenDays(7, db.settings.openDays),
+    pickupDays: pickupDays(),
     settings: { name, tagline, phone, address, hours, openTime, closeTime, openDays, facebook, instagram, ordersOpen },
+    closures: db.settings.closures.filter((c) => c.to >= todayIso()).sort((a, b) => a.from.localeCompare(b.from)),
     menu,
   });
 });
@@ -228,7 +240,9 @@ app.post('/api/orders', (req, res) => {
     id: newId(),
     dishId: dish.id,
     dishTitle: dish.title,
+    category: dish.category,
     qty: Math.max(1, Math.min(50, parseInt(b.qty, 10) || 1)),
+    unitPrice: parsePrice(dish.price),
     name: str(b.name, 80),
     phone: str(b.phone, 30),
     date: dish.date || str(b.date, 10),
@@ -245,12 +259,17 @@ app.post('/api/orders', (req, res) => {
   if (o.date < todayIso() || (o.date === todayIso() && o.time < nowHHMM())) {
     return res.status(400).json({ error: 'Cette heure de retrait est déjà passée.' });
   }
+  const closed = closureOn(o.date, db.settings.closures);
+  if (closed) {
+    return res.status(400).json({ error: 'La boutique est fermée ce jour-là' + (closed.reason ? ' (' + closed.reason + ')' : '') + '.' });
+  }
   if (!openDays.includes(weekday(o.date)) || o.time < openTime || o.time > closeTime) {
     return res.status(400).json({ error: 'La boutique est fermée à ce moment-là.' });
   }
+  o.total = o.unitPrice == null ? null : Math.round(o.unitPrice * o.qty * 100) / 100;
   db.orders.push(o);
   saveDb();
-  res.json({ ok: true, order: { dishTitle: o.dishTitle, qty: o.qty, date: o.date, time: o.time } });
+  res.json({ ok: true, order: { dishTitle: o.dishTitle, qty: o.qty, date: o.date, time: o.time, total: o.total } });
 });
 
 // Demande traiteur / événement (bouton « Envoyer un message »)
@@ -306,7 +325,7 @@ app.get('/api/admin', requireAdmin, (_req, res) => {
     .sort((a, b) => b.postedAt.localeCompare(a.postedAt));
   const orders = [...db.orders].sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
   const messages = [...db.messages].reverse();
-  res.json({ today: todayIso(), pickupDays: nextOpenDays(7, db.settings.openDays), settings: db.settings, dishes, orders, messages });
+  res.json({ today: todayIso(), pickupDays: pickupDays(), settings: db.settings, dishes, orders, messages });
 });
 
 // ---- Admin : plats ----------------------------------------------------------
@@ -341,6 +360,16 @@ app.patch('/api/dishes/:id', requireAdmin, (req, res) => {
   if (typeof b.onMenu === 'boolean') dish.onMenu = b.onMenu;
   for (const k of ['title', 'description', 'price', 'category']) {
     if (typeof b[k] === 'string') dish[k] = str(b[k], k === 'description' ? 600 : 120);
+  }
+  // Prix ajouté après coup : on complète les commandes de ce plat restées sans prix
+  const unit = parsePrice(dish.price);
+  if (unit != null) {
+    db.orders
+      .filter((o) => o.dishId === dish.id && o.unitPrice == null)
+      .forEach((o) => {
+        o.unitPrice = unit;
+        o.total = Math.round(unit * o.qty * 100) / 100;
+      });
   }
   saveDb();
   res.json(dish);
@@ -391,6 +420,26 @@ app.patch('/api/messages/:id', requireAdmin, (req, res) => {
 
 app.delete('/api/messages/:id', requireAdmin, (req, res) => {
   db.messages = db.messages.filter((x) => x.id !== req.params.id);
+  saveDb();
+  res.json({ ok: true });
+});
+
+// ---- Admin : fermetures exceptionnelles -------------------------------------
+app.post('/api/closures', requireAdmin, (req, res) => {
+  const b = req.body || {};
+  const from = str(b.from, 10);
+  const to = str(b.to, 10) || from;
+  if (!isDate(from) || !isDate(to) || to < from) {
+    return res.status(400).json({ error: 'Indiquez une date de début et une date de fin valides.' });
+  }
+  const c = { id: newId(), from, to, reason: str(b.reason, 120) };
+  db.settings.closures = [...(db.settings.closures || []), c].sort((x, y) => x.from.localeCompare(y.from));
+  saveDb();
+  res.json(c);
+});
+
+app.delete('/api/closures/:id', requireAdmin, (req, res) => {
+  db.settings.closures = (db.settings.closures || []).filter((c) => c.id !== req.params.id);
   saveDb();
   res.json({ ok: true });
 });

@@ -42,6 +42,7 @@
       <button class="tab active" data-tab="plats">Plats</button>
       <button class="tab" data-tab="commandes">Commandes <span class="badge" id="order-badge" hidden></span></button>
       <button class="tab" data-tab="messages">Messages <span class="badge" id="msg-badge" hidden></span></button>
+      <button class="tab" data-tab="compta">Compta</button>
       <button class="tab" data-tab="infos">Infos</button>
     </nav>
 
@@ -72,7 +73,7 @@
 
           <div class="row">
             <label class="grow">Nom du plat<input name="title" required maxlength="120" placeholder="Ex : Joue de porc au cidre"></label>
-            <label class="price-field">Prix<input name="price" inputmode="decimal" maxlength="20" placeholder="12,50"></label>
+            <label class="price-field">Prix (€)<input name="price" inputmode="decimal" maxlength="20" placeholder="12,50" required></label>
           </div>
           <label>Accompagnement / description <span class="muted">(facultatif)</span><textarea name="description" rows="2" maxlength="600" placeholder="Ex : boulgour pilaf"></textarea></label>
 
@@ -115,8 +116,49 @@
         </div>
       </section>
 
+      <!-- COMPTA -->
+      <section data-panel="compta" hidden>
+        <div class="card">
+          <h2>Comptabilité</h2>
+          <div class="segmented" id="period">
+            <button type="button" data-period="day" class="on">Jour</button>
+            <button type="button" data-period="week">Semaine</button>
+            <button type="button" data-period="month">Mois</button>
+          </div>
+          <div class="period-nav">
+            <button type="button" class="mini" id="period-prev" aria-label="Période précédente">‹</button>
+            <strong id="period-label"></strong>
+            <button type="button" class="mini" id="period-next" aria-label="Période suivante">›</button>
+          </div>
+          <button type="button" class="link small-link" id="period-today">Revenir à aujourd’hui</button>
+          <div class="kpis" id="kpis"></div>
+          <p class="muted small" id="compta-note"></p>
+          <p class="muted small">Réservations en ligne, comptées au jour du retrait (les commandes annulées sont exclues). Les ventes faites directement au comptoir ne sont pas incluses.</p>
+        </div>
+        <div class="card">
+          <h2>Par plat</h2>
+          <div id="by-dish"></div>
+        </div>
+        <div class="card" id="by-day-card">
+          <h2>Jour par jour</h2>
+          <div id="by-day"></div>
+        </div>
+      </section>
+
       <!-- INFOS -->
       <section data-panel="infos" hidden>
+        <div class="card">
+          <h2>Fermetures exceptionnelles</h2>
+          <p class="muted small">Congés, jours fériés, inventaire… Le site l’annonce aux clients et les réservations sont bloquées ces jours-là.</p>
+          <form id="closure-form" class="closure-form">
+            <label>Du<input type="date" name="from" required></label>
+            <label>Au (inclus)<input type="date" name="to"></label>
+            <label class="grow">Motif <span class="muted">(facultatif)</span><input name="reason" maxlength="120" placeholder="Congés annuels"></label>
+            <button class="btn btn-red" type="submit">Ajouter</button>
+          </form>
+          <p class="form-msg" id="closure-msg" role="status"></p>
+          <div id="closures" class="list"></div>
+        </div>
         <form id="settings-form" class="card">
           <h2>Informations de la boutique</h2>
           <label class="check"><input type="checkbox" name="ordersOpen"> Réservation de plats en ligne activée</label>

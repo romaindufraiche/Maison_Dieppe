@@ -106,3 +106,39 @@ details.card summary { cursor: pointer; font-weight: 600; }
 
 .msg-text { color: var(--ink) !important; white-space: pre-line; }
 .tab { font-size: .88rem; }
+
+/* onglets : 5 onglets, défilement horizontal si besoin */
+.tabs { overflow-x: auto; scrollbar-width: none; }
+.tab { flex: 1 0 auto; padding: 14px 12px; }
+
+/* fermetures */
+.closure-form { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; }
+.closure-form label { flex: 1 1 140px; }
+.closure-form .grow { flex: 2 1 200px; }
+
+/* comptabilité */
+.period-nav { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.period-nav strong { text-align: center; color: var(--navy-deep); }
+.period-nav .mini { font-size: 1.2rem; padding: 4px 14px; }
+.kpis { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.kpi { border: 1px solid var(--line); border-radius: 3px; padding: 14px; display: grid; gap: 2px; }
+.kpi-label { font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 600; }
+.kpi-value { font-size: 1.6rem; font-weight: 800; color: var(--navy-deep); }
+.kpi:nth-child(2) .kpi-value { color: var(--red); }
+.kpi-sub { font-size: .8rem; color: var(--muted); }
+.compta-table { width: 100%; border-collapse: collapse; font-size: .95rem; }
+.compta-table th { text-align: left; font-size: .75rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); padding: 6px 4px; border-bottom: 1px solid var(--line); }
+.compta-table td { padding: 9px 4px; border-bottom: 1px solid var(--line); }
+.compta-table .num, .compta-table th:not(:first-child) { text-align: right; white-space: nowrap; }
+.compta-table tr.total td { font-weight: 800; color: var(--navy-deep); border-bottom: 0; border-top: 2px solid var(--navy); }
+.day-row {
+  display: grid; grid-template-columns: 92px 1fr auto auto; gap: 10px; align-items: center; width: 100%;
+  background: none; border: 0; border-bottom: 1px solid var(--line); padding: 9px 2px; font: inherit; font-size: .9rem; cursor: pointer; text-align: left;
+}
+.day-row.is-today .day-name { color: var(--red); font-weight: 700; }
+.day-name { white-space: nowrap; }
+.bar { height: 8px; background: var(--paper); border-radius: 1px; overflow: hidden; }
+.bar-fill { display: block; height: 100%; background: var(--navy); }
+.day-qty { color: var(--muted); white-space: nowrap; }
+.day-rev { font-weight: 700; white-space: nowrap; min-width: 76px; text-align: right; }
+@media (max-width: 420px) { .day-row { grid-template-columns: 78px 1fr auto; } .day-qty { display: none; } }

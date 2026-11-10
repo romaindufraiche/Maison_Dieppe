@@ -24,7 +24,8 @@ La confirmation de réservation affiche la carte de la boutique.
 - **Commandes** : regroupées par jour de retrait, avec le **récapitulatif cuisine** (« 4 × Filet de bar… »),
   le téléphone du client cliquable, et les boutons Retirée / Annuler.
 - **Messages** : les demandes traiteur et événements envoyées par le bouton « Envoyer un message » (type, date, nombre de personnes, coordonnées).
-- **Infos** : téléphone, adresse, horaires, créneaux de retrait, liens, activer ou couper la réservation en ligne.
+- **Compta** : pour un jour, une semaine ou un mois (avec flèches pour naviguer) : nombre de plats commandés, chiffre d'affaires, déjà encaissé, panier moyen, détail par plat et jour par jour. Calculé sur les réservations en ligne (ventes au comptoir non incluses).
+- **Infos** : **fermetures exceptionnelles** (congés, jours fériés : annoncées sur le site, réservations bloquées), téléphone, adresse, horaires, créneaux de retrait, liens, activer ou couper la réservation en ligne.
 
 Au premier lancement, le site est prérempli avec le menu de la semaine et quelques produits de la vitrine tirés de
 leur Instagram (sans prix : à compléter dans l'admin).
