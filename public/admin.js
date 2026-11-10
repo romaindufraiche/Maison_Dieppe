@@ -562,8 +562,8 @@
   function evolution(now, before) {
     if (!before) return now ? 'nouveau' : '';
     const pct = Math.round(((now - before) / before) * 100);
-    const names = { day: 'la veille', week: 'la semaine précédente', month: 'le mois précédent' };
-    return (pct >= 0 ? '+' : '') + pct + ' % par rapport à ' + names[period];
+    const names = { day: 'à la veille', week: 'à la semaine précédente', month: 'au mois précédent' };
+    return (pct >= 0 ? '+' : '') + pct + ' % par rapport ' + names[period];
   }
 
   function renderCompta() {

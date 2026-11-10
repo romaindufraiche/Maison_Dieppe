@@ -142,3 +142,20 @@ details.card summary { cursor: pointer; font-weight: 600; }
 .day-qty { color: var(--muted); white-space: nowrap; }
 .day-rev { font-weight: 700; white-space: nowrap; min-width: 76px; text-align: right; }
 @media (max-width: 420px) { .day-row { grid-template-columns: 78px 1fr auto; } .day-qty { display: none; } }
+
+/* ---------------------------------------------------------------- ordinateur */
+@media (min-width: 1000px) {
+  .admin-main { max-width: 1160px; padding: 24px; gap: 20px; }
+  .admin-main section { gap: 20px; }
+  .admin-bar, .tabs { padding-left: max(24px, calc((100vw - 1160px) / 2)); padding-right: max(24px, calc((100vw - 1160px) / 2)); }
+  .tab { flex: 0 0 auto; padding: 16px 22px; }
+  section[data-panel="plats"] { grid-template-columns: 1fr 1fr; align-items: start; }
+  section[data-panel="plats"] #dish-form { grid-row: span 2; position: sticky; top: 120px; }
+  section[data-panel="commandes"] #orders-upcoming { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+  section[data-panel="commandes"] details { grid-column: 1 / -1; }
+  section[data-panel="messages"] .list { grid-template-columns: 1fr 1fr; align-items: start; }
+  section[data-panel="compta"] { grid-template-columns: 1fr 1fr; align-items: start; }
+  section[data-panel="compta"] > .card:first-child { grid-column: 1 / -1; }
+  .kpis { grid-template-columns: repeat(4, 1fr); }
+  section[data-panel="infos"] { grid-template-columns: 1fr 1fr; align-items: start; }
+}
