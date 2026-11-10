@@ -17,9 +17,20 @@
 </head>
 <body>
   <header class="top">
-    <a class="wordmark" href="/" aria-label="Maison Dieppe, accueil">
-      <span class="wm-name">Maison Dieppe</span>
-      <span class="wm-script">charcuterie-traiteur</span>
+    <a class="brand" href="/" aria-label="Maison Dieppe, accueil">
+      <svg class="logo" viewBox="0 0 200 120" role="img" aria-label="Logo Maison Dieppe"><g fill="none" stroke="#2c3570" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+<circle cx="100" cy="13" r="7" fill="#fff"/>
+<path d="M26 98 C26 52 60 20 100 20 C140 20 174 52 174 98"/>
+<path d="M10 104 C12 99 16 98 26 98 H174 C184 98 188 99 190 104"/>
+<path d="M34 115 C36 111 38 111 44 111 H156 C162 111 164 111 166 115"/>
+</g>
+<text x="55" y="86" font-family="'Cormorant Garamond','Bodoni 72',Didot,Georgia,serif" font-weight="700" font-size="72" fill="#2c3570">M</text>
+<text x="96" y="96" font-family="'Cormorant Garamond','Bodoni 72',Didot,Georgia,serif" font-weight="700" font-size="72" fill="#a12b38">D</text>
+<g transform="translate(108 25) scale(.62)" fill="#fff" stroke="#a12b38" stroke-width="2.6" stroke-linejoin="round"><path d="M4 30 h26 v-9 c9 -1 10 -14 0 -15 c-1 -9 -13 -11 -17 -4 c-5 -5 -16 -2 -14 5 c-9 1 -9 14 1 14 z M4 25 h26"/></g></svg>
+      <span class="wordmark">
+        <span class="wm-name">Maison Dieppe</span>
+        <span class="wm-script">charcuterie-traiteur</span>
+      </span>
     </a>
     <a class="top-call" id="top-call" href="tel:0139849723" aria-label="Appeler la boutique">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg>
@@ -31,7 +42,7 @@
     <!-- 1. RÉSERVER UN PLAT -->
     <section class="order" id="commander">
       <div class="wrap">
-        <p class="award">🥇 Champion de France de la meilleure choucroute 2026</p>
+        <a class="award" href="https://www.leparisien.fr/val-d-oise-95/les-alsaciens-mont-felicite-la-meilleure-choucroute-de-france-se-prepare-au-champagne-dans-le-val-doise-24-10-2026-ETGXBCI4AFD6JFXWJYP42ZJYWE.php" target="_blank" rel="noopener"><strong>Champion de France de la meilleure choucroute 2026</strong><span>Lire l’article du Parisien →</span></a>
         <h1>Réservez votre plat,<br><em>on vous le prépare.</em></h1>
         <p class="lead">Du vrai, du bon, du fait maison. Réservez en 20&nbsp;secondes, récupérez en boutique à Enghien-les-Bains. Paiement sur place.</p>
 
@@ -59,7 +70,7 @@
             <strong>Un anniversaire, un buffet, un repas de famille&nbsp;?</strong>
             <span>Buffets, plats à partager, pièces apéritives, menus de fêtes : on vous conseille sur les quantités et on s'occupe de tout.</span>
           </div>
-          <a class="btn btn-outline" data-tel href="tel:0139849723">Nous appeler</a>
+          <button type="button" class="btn btn-navy" data-contact>Envoyer un message</button>
         </aside>
       </div>
     </section>
@@ -115,7 +126,7 @@
           <h2>Champion de France de la meilleure choucroute</h2>
           <p>Quelle fierté pour toute notre équipe&nbsp;! Cette récompense vient saluer notre passion du métier, notre savoir-faire artisanal et tout le travail réalisé au quotidien pour vous proposer des produits faits maison et de qualité.</p>
           <p>Un immense merci à vous, nos fidèles clients, pour votre confiance et votre fidélité.</p>
-          <a class="btn btn-light" href="#commander">Réserver une choucroute</a>
+          <div class="btn-row"><a class="btn btn-light" href="#commander">Réserver une choucroute</a><a class="btn btn-ghost-light" href="https://www.leparisien.fr/val-d-oise-95/les-alsaciens-mont-felicite-la-meilleure-choucroute-de-france-se-prepare-au-champagne-dans-le-val-doise-24-10-2026-ETGXBCI4AFD6JFXWJYP42ZJYWE.php" target="_blank" rel="noopener">Lire l’article du Parisien</a></div>
         </div>
       </div>
     </section>
@@ -126,7 +137,7 @@
         <h2 class="h-title">La vie de la Maison</h2>
         <p class="sub center">Les coulisses, les nouveautés de la vitrine et nos petites astuces de cuisine.</p>
         <div class="post-grid" id="posts"></div>
-        <p class="center"><a class="btn btn-outline" data-instagram href="https://www.instagram.com/maisondieppe_traiteur/" target="_blank" rel="noopener">Suivez-nous sur Instagram</a></p>
+        <p class="center"><a class="btn btn-insta" data-instagram href="https://www.instagram.com/maisondieppe_traiteur/" target="_blank" rel="noopener"><svg class="ig" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.4" cy="6.6" r="1.3" fill="currentColor"/></svg>Suivez-nous sur Instagram <span class="handle">@maisondieppe_traiteur</span></a></p>
       </div>
     </section>
 
@@ -144,16 +155,30 @@
             <dt>Téléphone</dt>
             <dd><a data-tel href="tel:0139849723"><span data-phone>01 39 84 97 23</span></a></dd>
           </dl>
+          <p class="btn-row"><a class="btn btn-red" data-directions href="https://www.google.com/maps/dir/?api=1&destination=Maison+Dieppe,+3+place+de+Verdun,+95880+Enghien-les-Bains" target="_blank" rel="noopener">Itinéraire</a><button type="button" class="btn btn-outline" data-contact>Envoyer un message</button></p>
           <p class="socials">
             <a data-instagram href="https://www.instagram.com/maisondieppe_traiteur/" target="_blank" rel="noopener">Instagram</a>
             <a data-facebook href="https://www.facebook.com/p/Maison-Dieppe-100071220223822/" target="_blank" rel="noopener">Facebook</a>
           </p>
         </div>
       </div>
+      <div class="wrap">
+        <iframe class="map" title="Plan d’accès à Maison Dieppe" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+          src="https://maps.google.com/maps?q=Maison+Dieppe,+3+place+de+Verdun,+95880+Enghien-les-Bains&z=16&output=embed"></iframe>
+      </div>
     </section>
   </main>
 
   <footer class="footer">
+    <svg class="logo" viewBox="0 0 200 120" role="img" aria-label="Logo Maison Dieppe"><g fill="none" stroke="#2c3570" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+<circle cx="100" cy="13" r="7" fill="#fff"/>
+<path d="M26 98 C26 52 60 20 100 20 C140 20 174 52 174 98"/>
+<path d="M10 104 C12 99 16 98 26 98 H174 C184 98 188 99 190 104"/>
+<path d="M34 115 C36 111 38 111 44 111 H156 C162 111 164 111 166 115"/>
+</g>
+<text x="55" y="86" font-family="'Cormorant Garamond','Bodoni 72',Didot,Georgia,serif" font-weight="700" font-size="72" fill="#2c3570">M</text>
+<text x="96" y="96" font-family="'Cormorant Garamond','Bodoni 72',Didot,Georgia,serif" font-weight="700" font-size="72" fill="#a12b38">D</text>
+<g transform="translate(108 25) scale(.62)" fill="#fff" stroke="#a12b38" stroke-width="2.6" stroke-linejoin="round"><path d="M4 30 h26 v-9 c9 -1 10 -14 0 -15 c-1 -9 -13 -11 -17 -4 c-5 -5 -16 -2 -14 5 c-9 1 -9 14 1 14 z M4 25 h26"/></g></svg>
     <span class="wm-name">Maison Dieppe</span>
     <span class="wm-script">Goûtez local, vivez mieux&nbsp;!</span>
   </footer>
@@ -205,8 +230,56 @@
       <div class="done-icon">✓</div>
       <h3>C'est réservé&nbsp;!</h3>
       <p id="done-text"></p>
+      <div class="done-place">
+        <iframe class="map small" title="Plan d’accès à Maison Dieppe" loading="lazy" referrerpolicy="no-referrer-when-downgrade" data-map-src="https://maps.google.com/maps?q=Maison+Dieppe,+3+place+de+Verdun,+95880+Enghien-les-Bains&z=16&output=embed"></iframe>
+        <div class="done-addr">
+          <strong>Maison Dieppe</strong>
+          <span>3 place de Verdun, 95880 Enghien-les-Bains</span>
+          <a data-directions href="https://www.google.com/maps/dir/?api=1&destination=Maison+Dieppe,+3+place+de+Verdun,+95880+Enghien-les-Bains" target="_blank" rel="noopener">Itinéraire →</a>
+        </div>
+      </div>
       <p class="od-note">Une question&nbsp;? Appelez-nous au <a data-tel href="tel:0139849723"><span data-phone>01 39 84 97 23</span></a>.</p>
       <button class="btn btn-navy btn-block" type="button" data-close>Parfait, merci&nbsp;!</button>
+    </div>
+  </dialog>
+
+  <!-- Fenêtre « Envoyer un message » (traiteur, événements) -->
+  <dialog id="contact-dialog" class="sheet" aria-labelledby="ct-title">
+    <form id="contact-form" novalidate>
+      <button type="button" class="sheet-close" data-close aria-label="Fermer">×</button>
+      <div>
+        <p class="kicker">Traiteur &amp; événements</p>
+        <h3 id="ct-title">Parlez-nous de votre projet</h3>
+      </div>
+      <div class="od-step">
+        <span class="label">C'est pour…</span>
+        <div class="chips wrap-chips" id="ct-kinds">
+          <button type="button" class="chip" data-kind="Anniversaire">Anniversaire</button>
+          <button type="button" class="chip" data-kind="Buffet">Buffet</button>
+          <button type="button" class="chip" data-kind="Repas de famille">Repas de famille</button>
+          <button type="button" class="chip" data-kind="Menu de fêtes">Menu de fêtes</button>
+          <button type="button" class="chip" data-kind="Autre">Autre</button>
+        </div>
+      </div>
+      <div class="od-row">
+        <label><span class="label">Date <small>(si vous l'avez)</small></span><input name="date" type="date"></label>
+        <label><span class="label">Nombre de personnes</span><input name="guests" type="number" min="1" max="1000" inputmode="numeric" placeholder="20"></label>
+      </div>
+      <label class="od-step"><span class="label">Votre message</span><textarea name="message" rows="3" maxlength="2000" required placeholder="Ex : buffet froid pour 30 personnes, avec des pièces apéritives…"></textarea></label>
+      <div class="od-row">
+        <label><span class="label">Votre nom</span><input name="name" autocomplete="name" required maxlength="80"></label>
+        <label><span class="label">Téléphone</span><input name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="30"></label>
+      </div>
+      <label class="od-step"><span class="label">E-mail <small>(facultatif)</small></span><input name="email" type="email" autocomplete="email" maxlength="120"></label>
+      <label class="hp" aria-hidden="true">Site web<input name="website" tabindex="-1" autocomplete="off"></label>
+      <button class="btn btn-red btn-block" type="submit" id="ct-submit">Envoyer le message</button>
+      <p class="form-msg" id="ct-msg" role="status"></p>
+    </form>
+    <div id="contact-done" class="done" hidden>
+      <div class="done-icon">✓</div>
+      <h3>Message envoyé&nbsp;!</h3>
+      <p>Merci, on revient vers vous très vite pour en parler ensemble.</p>
+      <button class="btn btn-navy btn-block" type="button" data-close>Fermer</button>
     </div>
   </dialog>
 

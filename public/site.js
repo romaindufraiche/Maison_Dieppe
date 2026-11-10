@@ -246,10 +246,12 @@
     })
   );
 
-  $$('[data-close]').forEach((b) => b.addEventListener('click', () => dlg.close()));
-  dlg.addEventListener('click', (e) => {
-    if (e.target === dlg) dlg.close(); // clic en dehors
-  });
+  $$('[data-close]').forEach((b) => b.addEventListener('click', () => b.closest('dialog').close()));
+  $$('dialog').forEach((d) =>
+    d.addEventListener('click', (e) => {
+      if (e.target === d) d.close(); // clic en dehors
+    })
+  );
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -289,9 +291,13 @@
       localStorage.setItem('md_name', form.name.value.trim());
       localStorage.setItem('md_phone', form.phone.value.trim());
       localStorage.setItem('md_time', time);
-      $('#done-text').textContent =
-        qty + ' × ' + current.title + ', à retirer ' + longDate(chosenDate) + ' à partir de ' + time.replace(':', 'h') +
-        '. On vous attend au 3 place de Verdun !';
+      const done = $('#done-text');
+      done.innerHTML = '';
+      done.appendChild(el('strong', null, qty + ' × ' + current.title));
+      done.appendChild(document.createElement('br'));
+      done.appendChild(document.createTextNode('À retirer ' + longDate(chosenDate) + ', à partir de ' + time.replace(':', 'h') + '.'));
+      const map = $('#order-done iframe');
+      if (!map.src) map.src = map.dataset.mapSrc;
       form.hidden = true;
       $('#order-done').hidden = false;
     } catch (err) {
@@ -300,6 +306,56 @@
     } finally {
       btn.disabled = false;
       btn.textContent = 'Réserver';
+    }
+  });
+
+  // ------------------------------------------------- message traiteur
+  const cdlg = $('#contact-dialog');
+  const cform = $('#contact-form');
+  let kind = '';
+  $$('#ct-kinds .chip').forEach((c) =>
+    c.addEventListener('click', () => {
+      kind = kind === c.dataset.kind ? '' : c.dataset.kind;
+      $$('#ct-kinds .chip').forEach((x) => x.classList.toggle('on', x.dataset.kind === kind));
+    })
+  );
+  $$('[data-contact]').forEach((b) =>
+    b.addEventListener('click', () => {
+      cform.hidden = false;
+      $('#contact-done').hidden = true;
+      $('#ct-msg').textContent = '';
+      cform.name.value = cform.name.value || localStorage.getItem('md_name') || '';
+      cform.phone.value = cform.phone.value || localStorage.getItem('md_phone') || '';
+      if (data) cform.date.min = data.today;
+      cdlg.showModal();
+    })
+  );
+  cform.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const msg = $('#ct-msg');
+    msg.className = 'form-msg';
+    const btn = $('#ct-submit');
+    btn.disabled = true;
+    try {
+      const body = Object.fromEntries(new FormData(cform));
+      body.kind = kind;
+      const res = await fetch('/api/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      const out = await res.json();
+      if (!res.ok) throw new Error(out.error || 'Erreur');
+      cform.reset();
+      kind = '';
+      $$('#ct-kinds .chip').forEach((x) => x.classList.remove('on'));
+      cform.hidden = true;
+      $('#contact-done').hidden = false;
+    } catch (err) {
+      msg.textContent = err.message || 'Une erreur est survenue, appelez-nous directement.';
+      msg.classList.add('error');
+    } finally {
+      btn.disabled = false;
     }
   });
 

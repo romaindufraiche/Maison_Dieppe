@@ -96,9 +96,10 @@ function loadDb() {
       settings: { ...DEFAULT_SETTINGS, ...raw.settings },
       dishes: raw.dishes || [],
       orders: raw.orders || [],
+      messages: raw.messages || [],
     };
   } catch {
-    return { settings: { ...DEFAULT_SETTINGS }, dishes: seedDishes(), orders: [] };
+    return { settings: { ...DEFAULT_SETTINGS }, dishes: seedDishes(), orders: [], messages: [] };
   }
 }
 
@@ -252,6 +253,32 @@ app.post('/api/orders', (req, res) => {
   res.json({ ok: true, order: { dishTitle: o.dishTitle, qty: o.qty, date: o.date, time: o.time } });
 });
 
+// Demande traiteur / événement (bouton « Envoyer un message »)
+app.post('/api/messages', (req, res) => {
+  if (tooMany('msg:' + req.ip, 10, 60 * 60e3)) return res.status(429).json({ error: 'Trop de messages, merci de nous appeler.' });
+  const b = req.body || {};
+  if (str(b.website)) return res.json({ ok: true }); // pot de miel anti-spam
+  const m = {
+    id: newId(),
+    name: str(b.name, 80),
+    phone: str(b.phone, 30),
+    email: str(b.email, 120),
+    kind: str(b.kind, 40),
+    date: isDate(str(b.date, 10)) ? str(b.date, 10) : '',
+    guests: Math.max(0, Math.min(1000, parseInt(b.guests, 10) || 0)),
+    message: str(b.message, 2000),
+    status: 'nouveau',
+    createdAt: new Date().toISOString(),
+  };
+  if (!m.name || !(m.phone.replace(/\D/g, '').length >= 8 || /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(m.email))) {
+    return res.status(400).json({ error: 'Indiquez votre nom et un téléphone ou un e-mail pour que l’on puisse vous répondre.' });
+  }
+  if (!m.message) return res.status(400).json({ error: 'Dites-nous en quelques mots ce que vous souhaitez.' });
+  db.messages.push(m);
+  saveDb();
+  res.json({ ok: true });
+});
+
 // ---- Admin : session --------------------------------------------------------
 app.post('/api/login', (req, res) => {
   if (tooMany('login:' + req.ip, 10, 15 * 60e3)) return res.status(429).json({ error: 'Trop de tentatives, réessayez dans 15 minutes.' });
@@ -278,7 +305,8 @@ app.get('/api/admin', requireAdmin, (_req, res) => {
     .map((d) => ({ ...d, live: isLive(d) }))
     .sort((a, b) => b.postedAt.localeCompare(a.postedAt));
   const orders = [...db.orders].sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
-  res.json({ today: todayIso(), pickupDays: nextOpenDays(7, db.settings.openDays), settings: db.settings, dishes, orders });
+  const messages = [...db.messages].reverse();
+  res.json({ today: todayIso(), pickupDays: nextOpenDays(7, db.settings.openDays), settings: db.settings, dishes, orders, messages });
 });
 
 // ---- Admin : plats ----------------------------------------------------------
@@ -347,6 +375,22 @@ app.patch('/api/orders/:id', requireAdmin, (req, res) => {
 
 app.delete('/api/orders/:id', requireAdmin, (req, res) => {
   db.orders = db.orders.filter((x) => x.id !== req.params.id);
+  saveDb();
+  res.json({ ok: true });
+});
+
+// ---- Admin : messages ------------------------------------------------------
+app.patch('/api/messages/:id', requireAdmin, (req, res) => {
+  const m = db.messages.find((x) => x.id === req.params.id);
+  if (!m) return res.status(404).json({ error: 'Message introuvable' });
+  const status = str(req.body && req.body.status, 20);
+  if (['nouveau', 'traité'].includes(status)) m.status = status;
+  saveDb();
+  res.json(m);
+});
+
+app.delete('/api/messages/:id', requireAdmin, (req, res) => {
+  db.messages = db.messages.filter((x) => x.id !== req.params.id);
   saveDb();
   res.json({ ok: true });
 });

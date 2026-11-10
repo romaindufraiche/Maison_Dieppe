@@ -3,7 +3,7 @@
 
   const $ = (sel) => document.querySelector(sel);
   const $$ = (sel) => [...document.querySelectorAll(sel)];
-  let state = { settings: {}, dishes: [], orders: [], pickupDays: [], today: '' };
+  let state = { settings: {}, dishes: [], orders: [], messages: [], pickupDays: [], today: '' };
   let category = 'Plat';
   let dayChoice = ''; // '' = vitrine
   let resizedPhoto = null;
@@ -94,6 +94,7 @@
     renderLive();
     renderHistory();
     renderOrders();
+    renderMessages();
     fillSettings();
   }
 
@@ -420,6 +421,63 @@
     $('#order-badge').hidden = !n;
   }
 
+  // ---------- messages ----------
+  function renderMessages() {
+    const box = $('#messages');
+    box.innerHTML = '';
+    const list = state.messages || [];
+    if (!list.length) box.appendChild(el('p', 'empty-admin', 'Aucun message pour le moment.'));
+    list.forEach((m) => {
+      const c = el('div', 'order-card ' + (m.status === 'traité' ? 'retirée' : ''));
+      const top = el('div', 'top-line');
+      top.appendChild(el('span', 'time', m.kind || 'Message'));
+      top.appendChild(el('span', 'status', m.status));
+      c.appendChild(top);
+      const details = [
+        m.date && 'pour le ' + longDate(m.date),
+        m.guests && m.guests + ' personnes',
+        'reçu le ' + new Date(m.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }),
+      ].filter(Boolean).join(' · ');
+      c.appendChild(el('div', 'what', details));
+      c.appendChild(el('p', 'msg-text', m.message));
+      const who = el('p');
+      who.appendChild(document.createTextNode(m.name));
+      if (m.phone) {
+        who.appendChild(document.createTextNode(' — '));
+        const tel = el('a', null, m.phone);
+        tel.href = 'tel:' + m.phone.replace(/[^\d+]/g, '');
+        who.appendChild(tel);
+      }
+      if (m.email) {
+        who.appendChild(document.createTextNode(' — '));
+        const mail = el('a', null, m.email);
+        mail.href = 'mailto:' + m.email;
+        who.appendChild(mail);
+      }
+      c.appendChild(who);
+      const act = el('div', 'actions');
+      const toggle = m.status === 'traité' ? ['Remettre en « nouveau »', 'nouveau'] : ['✓ Traité', 'traité'];
+      act.appendChild(
+        button(toggle[0], m.status === 'traité' ? '' : 'primary', async () => {
+          await api('/api/messages/' + m.id, { method: 'PATCH', body: { status: toggle[1] } });
+          await load();
+        })
+      );
+      act.appendChild(
+        button('Supprimer', 'danger', async () => {
+          if (!confirm('Supprimer ce message ?')) return;
+          await api('/api/messages/' + m.id, { method: 'DELETE' });
+          await load();
+        })
+      );
+      c.appendChild(act);
+      box.appendChild(c);
+    });
+    const n = list.filter((m) => m.status === 'nouveau').length;
+    $('#msg-badge').textContent = n;
+    $('#msg-badge').hidden = !n;
+  }
+
   // ---------- infos ----------
   const FIELDS = ['name', 'tagline', 'phone', 'address', 'hours', 'openTime', 'closeTime', 'instagram', 'facebook'];
   function fillSettings() {
@@ -447,8 +505,10 @@
       api('/api/admin')
         .then((s) => {
           state.orders = s.orders;
+          state.messages = s.messages;
           state.today = s.today;
           renderOrders();
+          renderMessages();
         })
         .catch(() => {});
     }

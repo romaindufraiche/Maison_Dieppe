@@ -11,7 +11,10 @@ Site de la boutique **Maison Dieppe** (3 place de Verdun, 95880 Enghien-les-Bain
 2. **Les avis clients** (« Ce sont vos mots… »), repris des publications Instagram.
 3. **Champion de France de la meilleure choucroute 2026.**
 4. **La vie de la Maison** : une sélection de publications Instagram (photos et textes d'origine), dans `public/posts.json`.
-5. Adresse, horaires, téléphone, Instagram et Facebook.
+5. Adresse, horaires, carte Google Maps et itinéraire, Instagram et Facebook.
+
+Le bouton « Envoyer un message » (traiteur, buffets, événements) envoie la demande dans l'admin.
+La confirmation de réservation affiche la carte de la boutique.
 
 ## Ce que fait l'équipe (`/admin`), depuis le téléphone
 
@@ -20,6 +23,7 @@ Site de la boutique **Maison Dieppe** (3 place de Verdun, 95880 Enghien-les-Bain
   Les plats du jour disparaissent tout seuls le lendemain. « Republier » reprend un ancien plat avec sa photo.
 - **Commandes** : regroupées par jour de retrait, avec le **récapitulatif cuisine** (« 4 × Filet de bar… »),
   le téléphone du client cliquable, et les boutons Retirée / Annuler.
+- **Messages** : les demandes traiteur et événements envoyées par le bouton « Envoyer un message » (type, date, nombre de personnes, coordonnées).
 - **Infos** : téléphone, adresse, horaires, créneaux de retrait, liens, activer ou couper la réservation en ligne.
 
 Au premier lancement, le site est prérempli avec le menu de la semaine et quelques produits de la vitrine tirés de

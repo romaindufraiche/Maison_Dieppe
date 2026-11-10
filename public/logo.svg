@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 120">
+<g fill="none" stroke="#2c3570" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+<circle cx="100" cy="13" r="7" fill="#fff"/>
+<path d="M26 98 C26 52 60 20 100 20 C140 20 174 52 174 98"/>
+<path d="M10 104 C12 99 16 98 26 98 H174 C184 98 188 99 190 104"/>
+<path d="M34 115 C36 111 38 111 44 111 H156 C162 111 164 111 166 115"/>
+</g>
+<text x="55" y="86" font-family="'Cormorant Garamond','Bodoni 72',Didot,Georgia,serif" font-weight="700" font-size="72" fill="#2c3570">M</text>
+<text x="96" y="96" font-family="'Cormorant Garamond','Bodoni 72',Didot,Georgia,serif" font-weight="700" font-size="72" fill="#a12b38">D</text>
+<g transform="translate(108 25) scale(.62)" fill="#fff" stroke="#a12b38" stroke-width="2.6" stroke-linejoin="round"><path d="M4 30 h26 v-9 c9 -1 10 -14 0 -15 c-1 -9 -13 -11 -17 -4 c-5 -5 -16 -2 -14 5 c-9 1 -9 14 1 14 z M4 25 h26"/></g>
+</svg>

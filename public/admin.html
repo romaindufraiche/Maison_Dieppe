@@ -41,6 +41,7 @@
     <nav class="tabs" role="tablist">
       <button class="tab active" data-tab="plats">Plats</button>
       <button class="tab" data-tab="commandes">Commandes <span class="badge" id="order-badge" hidden></span></button>
+      <button class="tab" data-tab="messages">Messages <span class="badge" id="msg-badge" hidden></span></button>
       <button class="tab" data-tab="infos">Infos</button>
     </nav>
 
@@ -103,6 +104,15 @@
           <summary>Commandes passées</summary>
           <div id="orders-past" class="list"></div>
         </details>
+      </section>
+
+      <!-- MESSAGES -->
+      <section data-panel="messages" hidden>
+        <div class="card">
+          <h2>Demandes traiteur &amp; messages</h2>
+          <p class="muted small">Envoyés depuis le bouton « Envoyer un message » du site.</p>
+          <div id="messages" class="list"></div>
+        </div>
       </section>
 
       <!-- INFOS -->
